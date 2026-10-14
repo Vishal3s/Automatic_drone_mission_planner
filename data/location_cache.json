@@ -1,0 +1,983 @@
+{
+  "||address: jones cassia , karanai main rd, ottiambakkam, sonalur, tamil nadu 600130": {
+    "location": {
+      "place_id": "ChIJyU7Z-dhbUjoR-4vKH0tm2is",
+      "formatted_address": "Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "OPENSTREETMAP",
+      "geometry_note": "OpenStreetMap outline way/1342082079 contains the building's point.",
+      "geometry_meta": {
+        "id": "way/1342082079",
+        "source": "OPENSTREETMAP",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Jones Cassia",
+      "latitude": 12.869145999999999,
+      "longitude": 80.19956789999999,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.8691647,
+          80.1996381
+        ],
+        [
+          12.8691121,
+          80.1996389
+        ],
+        [
+          12.8690699,
+          80.1996381
+        ],
+        [
+          12.8690699,
+          80.1996027
+        ],
+        [
+          12.8690724,
+          80.1995708
+        ],
+        [
+          12.869119,
+          80.1995673
+        ],
+        [
+          12.8691639,
+          80.1995682
+        ],
+        [
+          12.8691647,
+          80.1996381
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "Jones Cassia, Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-11T16:32:21.374876+00:00"
+    },
+    "cached_at": "2026-10-11T16:32:21.374876+00:00"
+  },
+  "||address: jones cassia, karanai main rd, ottiambakkam, sonalur, tamil nadu 600130": {
+    "location": {
+      "place_id": "ChIJyU7Z-dhbUjoR-4vKH0tm2is",
+      "formatted_address": "Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Jones Cassia",
+      "latitude": 12.869145999999999,
+      "longitude": 80.19956789999999,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "Jones Cassia, Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-11T16:38:55.921746+00:00"
+    },
+    "cached_at": "2026-10-11T16:38:55.921746+00:00"
+  },
+  "||address: excellent care hospital velacery": {
+    "location": {
+      "place_id": "ChIJ0VtReu5dUjoRmSb06jti4m8",
+      "formatted_address": "Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "MICROSOFT",
+      "geometry_note": "Microsoft GlobalMLBuildingFootprints outline msft/123312212/273609 contains the building's point.",
+      "geometry_meta": {
+        "id": "msft/123312212/273609",
+        "source": "MICROSOFT",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "OLIR Super Speciality Hospital",
+      "latitude": 12.985623299999999,
+      "longitude": 80.2184309,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.9853954,
+          80.2183367
+        ],
+        [
+          12.9854005,
+          80.2185473
+        ],
+        [
+          12.9856786,
+          80.2185402
+        ],
+        [
+          12.9856721,
+          80.2182722
+        ],
+        [
+          12.9856421,
+          80.2182729
+        ],
+        [
+          12.9856425,
+          80.218289
+        ],
+        [
+          12.9856072,
+          80.2182899
+        ],
+        [
+          12.9856086,
+          80.2183489
+        ],
+        [
+          12.9855015,
+          80.2183516
+        ],
+        [
+          12.9855011,
+          80.218334
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "OLIR Super Speciality Hospital, Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-11T16:56:42.575576+00:00"
+    },
+    "cached_at": "2026-10-11T16:56:42.575576+00:00"
+  },
+  "||address: vandaloor zoo": {
+    "location": {
+      "place_id": "ChIJve1B4K73UjoR-oAMg6eN8OE",
+      "formatted_address": "GST Rd, Vandalur, Tamil Nadu 600048",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "VANDALUR zoo",
+      "latitude": 12.879326599999999,
+      "longitude": 80.0819116,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "VANDALUR zoo, GST Rd, Vandalur, Tamil Nadu 600048",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-12T05:42:00.882849+00:00"
+    },
+    "cached_at": "2026-10-12T05:42:00.882849+00:00"
+  },
+  "amethyst school|amethyst school|": {
+    "location": {
+      "place_id": "ChIJF-dx_sJbUjoRA5d18XFmMZU",
+      "formatted_address": "Sitalambakkam, Karanai Main Rd, Semmancheri, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": "amethyst school",
+      "campus": "amethyst school",
+      "building": null,
+      "latitude": 12.871571099999999,
+      "longitude": 80.20118649999999,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": [
+        12.870287769708497,
+        12.872985730291502,
+        80.1998558697085,
+        80.2025538302915
+      ],
+      "raw_source_name": "Amethyst International School - Thalambur | Sithalapakkam, Sitalambakkam, Karanai Main Rd, Semmancheri, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "match_details": {
+        "institution_match": true,
+        "campus_match": true,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": true,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-12T12:44:45.925248+00:00"
+    },
+    "cached_at": "2026-10-12T12:44:45.925248+00:00"
+  },
+  "||address: jones cassia , karanai main road , chennai - 600130": {
+    "location": {
+      "place_id": "ChIJyU7Z-dhbUjoR-4vKH0tm2is",
+      "formatted_address": "Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Jones Cassia",
+      "latitude": 12.869145999999999,
+      "longitude": 80.19956789999999,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "Jones Cassia, Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T09:19:49.259856+00:00"
+    },
+    "cached_at": "2026-10-13T09:19:49.259856+00:00"
+  },
+  "vit chennai|vit chennai|library": {
+    "location": {
+      "place_id": null,
+      "formatted_address": null,
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "OPENSTREETMAP",
+      "geometry_note": "OpenStreetMap outline way/1307421337 contains the building's point.",
+      "geometry_meta": {
+        "id": "way/1307421337",
+        "source": "OPENSTREETMAP",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": "VIT Chennai",
+      "campus": "VIT Chennai",
+      "building": "Library",
+      "latitude": 12.8408176,
+      "longitude": 80.1538807,
+      "resolution_type": "BUILDING",
+      "source": "OPENSTREETMAP",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.8408411,
+          80.1537877
+        ],
+        [
+          12.8407884,
+          80.1542193
+        ],
+        [
+          12.8403796,
+          80.1541547
+        ],
+        [
+          12.8404515,
+          80.1537231
+        ],
+        [
+          12.8404698,
+          80.1537303
+        ],
+        [
+          12.8408411,
+          80.1537877
+        ]
+      ],
+      "bounding_box": [
+        12.8407329,
+        12.8409951,
+        80.1537834,
+        80.1540114
+      ],
+      "raw_source_name": "VIT Chennai Library, Vandalur - Mambakkam - Kelambakkam Road, Ponmar, Kolathur, Chennai Metropolitan Area, Vandalur, Chengalpattu, Tamil Nadu, 600127, India",
+      "match_details": {
+        "institution_match": true,
+        "campus_match": true,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": true,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T18:08:49.560487+00:00"
+    },
+    "cached_at": "2026-10-13T18:08:49.560487+00:00"
+  },
+  "webamigo technologies llp|webamigo technologies llp|": {
+    "location": {
+      "place_id": "ChIJFzGOcQBZUjoRJy35QXE4plY",
+      "formatted_address": "KRISP IT Park, 942, Kelambakkam - Vandalur Rd, Kizhakottayur, Chennai, Keelakottiyur, Tamil Nadu 600127",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": "WEBAMIGO TECHNOLOGIES LLP",
+      "campus": "WEBAMIGO TECHNOLOGIES LLP",
+      "building": null,
+      "latitude": 12.8412841,
+      "longitude": 80.1525375,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": [
+        12.839893819708497,
+        12.842591780291501,
+        80.1511955197085,
+        80.1538934802915
+      ],
+      "raw_source_name": "WEBAMIGO TECHNOLOGIES LLP, KRISP IT Park, 942, Kelambakkam - Vandalur Rd, Kizhakottayur, Chennai, Keelakottiyur, Tamil Nadu 600127",
+      "match_details": {
+        "institution_match": true,
+        "campus_match": true,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": true,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T18:11:47.350029+00:00"
+    },
+    "cached_at": "2026-10-13T18:11:47.350029+00:00"
+  },
+  "||address: delta block , r5r4+g93, mambakkam, keelakottiyur, tamil nadu 600127, india": {
+    "location": {
+      "place_id": "ChIJ23k8YodZUjoR1w4Tqo1UqU0",
+      "formatted_address": "R5R4+G93, Mambakkam, Keelakottiyur, Tamil Nadu 600127",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "OPENSTREETMAP",
+      "geometry_note": "The building's point was 2.0 m outside the nearest mapped outline (Delta block); snapped to it..",
+      "geometry_meta": {
+        "id": "way/1307421341",
+        "source": "OPENSTREETMAP",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Delta Block",
+      "latitude": 12.8412724,
+      "longitude": 80.1559304,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.8412023,
+          80.1563225
+        ],
+        [
+          12.8412609,
+          80.1558805
+        ],
+        [
+          12.8411493,
+          80.1558616
+        ],
+        [
+          12.8410151,
+          80.1558389
+        ],
+        [
+          12.8409884,
+          80.1561393
+        ],
+        [
+          12.8409773,
+          80.1562638
+        ],
+        [
+          12.8412023,
+          80.1563225
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "Delta Block, R5R4+G93, Mambakkam, Keelakottiyur, Tamil Nadu 600127",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T18:13:00.635672+00:00"
+    },
+    "cached_at": "2026-10-13T18:13:00.635672+00:00"
+  },
+  "||address: chennai central railway station": {
+    "location": {
+      "place_id": "ChIJZWIhof9lUjoRFgkVYkVw7kc",
+      "formatted_address": "Periamet, Kannappar Thidal, Chennai, Tamil Nadu 600003",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Puratchi Thalaivar Dr. MGR CTL",
+      "latitude": 13.085161699999999,
+      "longitude": 80.275155,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "Puratchi Thalaivar Dr. MGR CTL, Periamet, Kannappar Thidal, Chennai, Tamil Nadu 600003",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T18:16:19.327844+00:00"
+    },
+    "cached_at": "2026-10-13T18:16:19.327844+00:00"
+  },
+  "||address: jones cassia karanai main road": {
+    "location": {
+      "place_id": "ChIJyU7Z-dhbUjoR-4vKH0tm2is",
+      "formatted_address": "Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "OPENSTREETMAP",
+      "geometry_note": "OpenStreetMap outline way/1342082079 contains the building's point.",
+      "geometry_meta": {
+        "id": "way/1342082079",
+        "source": "OPENSTREETMAP",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Jones Cassia",
+      "latitude": 12.869145999999999,
+      "longitude": 80.19956789999999,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.8691647,
+          80.1996381
+        ],
+        [
+          12.8691121,
+          80.1996389
+        ],
+        [
+          12.8690699,
+          80.1996381
+        ],
+        [
+          12.8690699,
+          80.1996027
+        ],
+        [
+          12.8690724,
+          80.1995708
+        ],
+        [
+          12.869119,
+          80.1995673
+        ],
+        [
+          12.8691639,
+          80.1995682
+        ],
+        [
+          12.8691647,
+          80.1996381
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "Jones Cassia, Karanai Main Rd, Ottiambakkam, Sonalur, Tamil Nadu 600130",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-13T18:19:43.955568+00:00"
+    },
+    "cached_at": "2026-10-13T18:19:43.955568+00:00"
+  },
+  "||address: excellent care hospital velachery": {
+    "location": {
+      "place_id": "ChIJ0VtReu5dUjoRmSb06jti4m8",
+      "formatted_address": "Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "MICROSOFT",
+      "geometry_note": "Microsoft GlobalMLBuildingFootprints outline msft/123312212/273609 contains the building's point.",
+      "geometry_meta": {
+        "id": "msft/123312212/273609",
+        "source": "MICROSOFT",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "OLIR Super Speciality Hospital",
+      "latitude": 12.985623299999999,
+      "longitude": 80.2184309,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          12.9853954,
+          80.2183367
+        ],
+        [
+          12.9854005,
+          80.2185473
+        ],
+        [
+          12.9856786,
+          80.2185402
+        ],
+        [
+          12.9856721,
+          80.2182722
+        ],
+        [
+          12.9856421,
+          80.2182729
+        ],
+        [
+          12.9856425,
+          80.218289
+        ],
+        [
+          12.9856072,
+          80.2182899
+        ],
+        [
+          12.9856086,
+          80.2183489
+        ],
+        [
+          12.9855015,
+          80.2183516
+        ],
+        [
+          12.9855011,
+          80.218334
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "OLIR Super Speciality Hospital, Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T01:58:40.332912+00:00"
+    },
+    "cached_at": "2026-10-14T01:58:40.332912+00:00"
+  },
+  "excellect care hospital|excellect care hospital|": {
+    "location": {
+      "place_id": "ChIJ0VtReu5dUjoRmSb06jti4m8",
+      "formatted_address": "Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": "excellect care hospital",
+      "campus": "excellect care hospital",
+      "building": null,
+      "latitude": 12.985623299999999,
+      "longitude": 80.2184309,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": [
+        12.984360319708498,
+        12.987058280291503,
+        80.2170639697085,
+        80.21976193029151
+      ],
+      "raw_source_name": "OLIR Super Speciality Hospital, Lake, 7/14, 7th Cross St, near Velachery, Rajalakshmi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "match_details": {
+        "institution_match": true,
+        "campus_match": true,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": true,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T02:07:55.567777+00:00"
+    },
+    "cached_at": "2026-10-14T02:07:55.567777+00:00"
+  },
+  "||address: phoenix market city velachery": {
+    "location": {
+      "place_id": "ChIJ62COtGNnUjoRUcI2kAApOts",
+      "formatted_address": "142, Velachery Main Rd, Indira Gandhi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Phoenix Marketcity",
+      "latitude": 12.991689899999999,
+      "longitude": 80.21694169999999,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "Phoenix Marketcity, 142, Velachery Main Rd, Indira Gandhi Nagar, Velachery, Chennai, Tamil Nadu 600042",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T02:10:13.682060+00:00"
+    },
+    "cached_at": "2026-10-14T02:10:13.682060+00:00"
+  },
+  "||address: lic builing,102, anna salai, chennai, tamil nadu 600002": {
+    "location": {
+      "place_id": "ChIJQaVE-xlmUjoRhGkqUVbXLH0",
+      "formatted_address": "LIC Building, LIC SOUTHERN ZONAL OFFICE, Anna Salai, Chennai, Tamil Nadu 600002",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "MICROSOFT",
+      "geometry_note": "The building's point was 7.1 m outside the nearest mapped outline (Microsoft footprint 209114); snapped to it..",
+      "geometry_meta": {
+        "id": "msft/123312212/209114",
+        "source": "MICROSOFT",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "LIC Building",
+      "latitude": 13.0642152,
+      "longitude": 80.2660636,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          13.0640155,
+          80.2658918
+        ],
+        [
+          13.0638174,
+          80.2660392
+        ],
+        [
+          13.0638869,
+          80.2661377
+        ],
+        [
+          13.0639315,
+          80.2661046
+        ],
+        [
+          13.0641586,
+          80.2664264
+        ],
+        [
+          13.0643122,
+          80.2663122
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "LIC Building, LIC Building, LIC SOUTHERN ZONAL OFFICE, Anna Salai, Chennai, Tamil Nadu 600002",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T04:43:33.256310+00:00"
+    },
+    "cached_at": "2026-10-14T04:43:33.256310+00:00"
+  },
+  "||address: lic building ,102, anna salai, chennai, tamil nadu 600002": {
+    "location": {
+      "place_id": "ChIJQaVE-xlmUjoRhGkqUVbXLH0",
+      "formatted_address": "LIC Building, LIC SOUTHERN ZONAL OFFICE, Anna Salai, Chennai, Tamil Nadu 600002",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "MICROSOFT",
+      "geometry_note": "The building's point was 7.1 m outside the nearest mapped outline (Microsoft footprint 209114); snapped to it..",
+      "geometry_meta": {
+        "id": "msft/123312212/209114",
+        "source": "MICROSOFT",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "LIC Building",
+      "latitude": 13.0642152,
+      "longitude": 80.2660636,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          13.0640155,
+          80.2658918
+        ],
+        [
+          13.0638174,
+          80.2660392
+        ],
+        [
+          13.0638869,
+          80.2661377
+        ],
+        [
+          13.0639315,
+          80.2661046
+        ],
+        [
+          13.0641586,
+          80.2664264
+        ],
+        [
+          13.0643122,
+          80.2663122
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "LIC Building, LIC Building, LIC SOUTHERN ZONAL OFFICE, Anna Salai, Chennai, Tamil Nadu 600002",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T05:49:36.389568+00:00"
+    },
+    "cached_at": "2026-10-14T05:49:36.389568+00:00"
+  },
+  "||address: 102, anna salai, chennai, tamil nadu 600002": {
+    "location": {
+      "place_id": "ChIJobRP-xlmUjoRX8kDoy6_hyw",
+      "formatted_address": "LIC SOUTHERN ZONAL OFFICE, 102, Anna Salai, Triplicane, Chennai, Tamil Nadu 600002",
+      "geometry_type": "POLYGON",
+      "geometry_parts": null,
+      "geometry_source": "MICROSOFT",
+      "geometry_note": "The building's point was 10.9 m outside the nearest mapped outline (Microsoft footprint 209114); snapped to it..",
+      "geometry_meta": {
+        "id": "msft/123312212/209114",
+        "source": "MICROSOFT",
+        "confidence": null,
+        "height_m": null,
+        "height_source": null
+      },
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "LIC SOUTHERN ZONAL OFFICE",
+      "latitude": 13.064201299999999,
+      "longitude": 80.2659833,
+      "resolution_type": "BUILDING",
+      "source": "GOOGLE_PLACES",
+      "confidence": "HIGH",
+      "geometry_available": true,
+      "geometry": [
+        [
+          13.0640155,
+          80.2658918
+        ],
+        [
+          13.0638174,
+          80.2660392
+        ],
+        [
+          13.0638869,
+          80.2661377
+        ],
+        [
+          13.0639315,
+          80.2661046
+        ],
+        [
+          13.0641586,
+          80.2664264
+        ],
+        [
+          13.0643122,
+          80.2663122
+        ]
+      ],
+      "bounding_box": null,
+      "raw_source_name": "LIC SOUTHERN ZONAL OFFICE, LIC SOUTHERN ZONAL OFFICE, 102, Anna Salai, Triplicane, Chennai, Tamil Nadu 600002",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": true,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T05:49:56.890083+00:00"
+    },
+    "cached_at": "2026-10-14T05:49:56.890083+00:00"
+  },
+  "||address: pacifica pride towers, pacifica aurum blvd, padur, pudupakkam, tamil nadu 603103": {
+    "location": {
+      "place_id": "ChIJryfkPz9bUjoRb7lVX2Ax_HU",
+      "formatted_address": "Pride Towers, Pacifica Aurum Blvd, Padur, Pudupakkam, Tamil Nadu 603103",
+      "geometry_type": "POINT",
+      "geometry_parts": null,
+      "geometry_source": null,
+      "geometry_note": null,
+      "geometry_meta": null,
+      "verified": true,
+      "institution": null,
+      "campus": null,
+      "building": "Pride Towers by Pacifica",
+      "latitude": 12.808429,
+      "longitude": 80.21474789999999,
+      "resolution_type": "POINT",
+      "source": "GOOGLE_PLACES",
+      "confidence": "MEDIUM",
+      "geometry_available": false,
+      "geometry": null,
+      "bounding_box": null,
+      "raw_source_name": "Pride Towers by Pacifica, Pride Towers, Pacifica Aurum Blvd, Padur, Pudupakkam, Tamil Nadu 603103",
+      "match_details": {
+        "institution_match": false,
+        "campus_match": false,
+        "building_match": true,
+        "coordinates_valid": true,
+        "campus_relationship": false,
+        "geometry_available": false,
+        "source_reliable": true
+      },
+      "resolved_at": "2026-10-14T07:05:50.593255+00:00"
+    },
+    "cached_at": "2026-10-14T07:05:50.593255+00:00"
+  }
+}

@@ -1,0 +1,72 @@
+# Versions verified against PyPI/libraries.io on 2026-09-11.
+# Pinned versions were bumped from earlier drafts because several packages
+# had jumped major versions since then (e.g. mavsdk went straight from the
+# 1.4.x line to 3.x -- there is no 2.7.2, which is what broke `uv pip install`).
+# If a future `pip install` still fails on one of these, that package has
+# shipped a newer release since -- loosen that one line to `>=` instead of
+# re-guessing a pin.
+
+# ---- Core ----
+python-dotenv==1.2.2
+pydantic==2.13.3
+pydantic-settings==2.14.0
+
+# ---- RAG (Phase 2) ----
+chromadb==1.5.9
+sentence-transformers==6.0.0
+
+# ---- LLM (Phase 3) ----
+ollama==0.6.2            # kept installed/configurable even though groq is now the default provider
+groq==1.7.0
+openai==3.11.0          # kept optional/configurable for a future cloud provider swap
+
+# ---- MAVSDK / PX4 SITL (Phase 6-8) ----
+mavsdk==3.17.2
+pymavlink==2.4.49
+
+# ---- Computer vision / image quality (RAMR/CV novelty Phase 12) ----
+# Versions pinned to what's actually installed/verified in the dev
+# sandbox this project has been built in (numpy 2.4.4, opencv 4.13.0) --
+# NOT independently re-checked against PyPI's exact release-string
+# formatting the way the versions above were (that check needs internet
+# access this environment didn't have when this phase was written). If
+# `pip install` can't find an exact match, loosen to `>=` per this
+# file's own top-of-file guidance rather than re-guessing a patch
+# version. `-headless`, not plain `opencv-python`: this backend never
+# displays a GUI window, so the headless build avoids an unnecessary Qt/
+# GUI dependency, matching this project's existing preference for
+# server-appropriate packages (mavsdk, chromadb) over desktop ones.
+numpy
+opencv-python-headless>=4.13.0
+
+# ---- HTTP client (location resolution improvement -- OpenStreetMap/Nominatim geocoding) ----
+# Same "not independently re-checked against PyPI" caveat as numpy/opencv
+# above -- pinned to what's actually installed/verified in this sandbox.
+requests>=2.33.1
+
+# ---- PDF ingestion (RAG Builder PDF-support feature) ----
+# Same "not independently re-checked against PyPI" caveat as numpy/opencv/
+# requests above -- pinned to what's actually installed/verified in this
+# sandbox (no internet/PyPI access here). Single PDF library per the
+# feature's own "do not introduce multiple PDF libraries" rule; chosen
+# over pypdf because it also does page-aware extraction + table
+# detection (extract_text()/extract_tables()) with no second dependency.
+pdfplumber>=0.11.9
+
+# ---- Web UI (mission control, app/api/main.py) ----
+# Starlette is the web framework FastAPI is built on; uvicorn serves it.
+# Versions are the ones the UI was tested with in the dev sandbox --
+# loosen to `>=` per this file's own guidance if pip can't find them.
+starlette>=1.0.0
+uvicorn>=0.46.0
+httpx>=0.28.1            # only for the UI tests (starlette.testclient)
+
+# ---- Database (Phase 10) ----
+sqlalchemy==2.0.52
+
+# ---- UI (Phase 11) ----
+streamlit==1.62.0
+
+# ---- Testing (Phase 9) ----
+pytest==9.1.1
+pytest-asyncio==1.4.0

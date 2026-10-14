@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mission Map</title>
+<!--
+  Phase 15 -- mission map. Served by app/ui/map_server.py.
+  Draws ONLY what /api/mission-view returns (built from the real mission,
+  MissionStateManager and DroneState -- see app/ui/mission_view.py).
+  Google Maps JavaScript API is loaded with the documented dynamic
+  bootstrap loader; markers use AdvancedMarkerElement (google.maps.Marker
+  is deprecated since Feb 2024).
+-->
+<style>
+  :root { --red:#D93025; --blue:#1A73E8; --green:#188038; --yellow:#F9AB00; --ink:#202124; --muted:#5f6368; --line:#dadce0; --bg:#fff; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  #app { display: flex; height: 100%; }
+  #map { flex: 1; min-width: 0; background: #e8eaed; }
+  #panel { width: 340px; max-width: 45vw; overflow-y: auto; border-left: 1px solid var(--line); padding: 14px 16px; }
+  h1 { font-size: 16px; margin: 0 0 4px; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 16px 0 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; font-weight: 600; color: #fff; }
+  .ok { background: var(--green); } .bad { background: var(--red); } .warn { background: var(--yellow); color: var(--ink); } .idle { background: var(--muted); }
+  .kv { display: grid; grid-template-columns: 110px 1fr; gap: 2px 8px; font-size: 13px; }
+  .kv div:nth-child(odd) { color: var(--muted); }
+  ul { margin: 4px 0; padding-left: 18px; } li { margin: 2px 0; }
+  .err { color: var(--red); } .wrn { color: #8a6100; }
+  .legend div { display: flex; align-items: center; gap: 8px; margin: 3px 0; font-size: 13px; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; flex: none; }
+  #banner { display: none; position: absolute; top: 10px; left: 10px; right: 360px; z-index: 5; background: #fce8e6; color: #a50e0e; border: 1px solid #f6aea9; padding: 8px 12px; border-radius: 6px; }
+  .drone { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--ink); position: relative; }
+  .drone::after { content: ""; position: absolute; left: 5px; top: -9px; border: 3px solid transparent; border-bottom: 7px solid var(--ink); }
+  .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12px; word-break: break-all; }
+  @media (max-width: 700px) { #app { flex-direction: column; } #panel { width: auto; max-width: none; height: 45%; border-left: 0; border-top: 1px solid var(--line); } #banner { right: 10px; } }
+</style>
+</head>
+<body>
+<div id="banner"></div>
+<div id="app">
+  <div id="map"></div>
+  <aside id="panel">
+    <h1 id="title">Mission map</h1>
+    <div id="status"><span class="badge idle">Waiting for a mission…</span></div>
+    <div id="message" style="margin-top:6px"></div>
+    <div id="target"></div>
+    <div id="issues"></div>
+    <div id="live"></div>
+    <h2>Legend</h2>
+    <div class="legend">
+      <div><span class="sw" style="background:var(--red)"></span>Target building / inspection region</div>
+      <div><span class="sw" style="background:var(--blue)"></span>Planned flight path &amp; waypoints</div>
+      <div><span class="sw" style="background:var(--green)"></span>Completed waypoints / flown track</div>
+      <div><span class="sw" style="background:var(--yellow)"></span>RAMR replanning / corrective waypoints</div>
+      <div><span class="sw" style="background:var(--ink);border-radius:50%"></span>Drone (live telemetry)</div>
+    </div>
+  </aside>
+</div>
+
+<script src="/static/mission_map.js"></script>
+<script>
+"use strict";
+// CLI map page (scripts/plan_mission.py). Drawing lives in /static/mission_map.js (shared with the web UI).
+const POLL_MS = 1000;
+let lastSig = null, lastView = null;
+
+function banner(text) { const b = document.getElementById("banner"); b.textContent = text || ""; b.style.display = text ? "block" : "none"; }
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+// Google calls this when the browser key is invalid / not authorized for this page.
+window.gm_authFailure = () => banner("Google Maps rejected the browser API key (GOOGLE_MAPS_BROWSER_API_KEY). Check that the Maps JavaScript API is enabled and the key's HTTP-referrer restriction allows " + location.origin + "/*.");
+
+MissionMap.setPickHandler(async (lat, lng) => {
+  document.getElementById("message").textContent = `Locating ${lastView.pick.building} at the clicked point and planning the mission…`;
+  try {
+    const res = await fetch("/api/pick", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ latitude: lat, longitude: lng }) });
+    const out = await res.json();
+    document.getElementById("message").textContent = out.message || "";
+  } catch (e) {
+    banner("Could not send the click to the mission map server -- is plan_mission.py still running?");
+  }
+});
+function renderPanel(v) {
+  const st = document.getElementById("status"), msg = document.getElementById("message");
+  if (!v.has_plan && v.pick) {
+    const p = v.pick;
+    st.innerHTML = p.state === "locating" ? '<span class="badge warn">Locating…</span>' : `<span class="badge warn">Click ${esc(p.building)} on the map</span>`;
+    document.getElementById("title").textContent = `Where is ${p.building}?`;
+    msg.innerHTML = `${esc(p.message)}<br><br><b>Click once on the roof of ${esc(p.building)}</b> inside the grey campus box. ` +
+      `The app uses that one point to find the building's real outline, saves it, and plans the mission. You only do this once per building.` +
+      (p.footprints_note ? `<br><span style="color:var(--muted)">${esc(p.footprints_note)}</span>` : "") +
+      (p.error ? `<br><span class="err">${esc(p.error)}</span>` : "");
+    document.getElementById("target").innerHTML = ""; document.getElementById("issues").innerHTML = ""; document.getElementById("live").innerHTML = "";
+    return;
+  }
+  if (!v.has_plan) { st.innerHTML = '<span class="badge idle">Waiting for a mission…</span>'; return; }
+  const cls = v.accepted ? "ok" : (v.status === "GENERATED" ? "warn" : "bad");
+  const label = v.accepted ? "Mission accepted" : v.status.replace(/_/g, " ");
+  st.innerHTML = `<span class="badge ${cls}">${esc(label)}</span>` + (v.replanning_active ? ' <span class="badge warn">RAMR replanning</span>' : "");
+  document.getElementById("title").textContent = v.mission_name || (v.target ? v.target.name : "Mission map");
+  msg.textContent = v.message || "";
+
+  let t = "";
+  if (v.target) {
+    const x = v.target, f = v.building_facts, r = v.inspection_region;
+    t += `<h2>Target</h2><div class="kv">
+      <div>Building</div><div>${esc(x.building || "—")}</div>
+      <div>Campus</div><div>${esc(x.campus || x.institution || "—")}</div>
+      <div>Address</div><div>${esc(x.formatted_address || "—")}</div>
+      <div>Coordinates</div><div class="mono">${x.latitude.toFixed(6)}, ${x.longitude.toFixed(6)}</div>
+      <div>Geometry</div><div>${esc(x.geometry_type)}${x.geometry_available ? "" : " (no outline available)"}</div>
+      <div>Source</div><div>${esc(x.source)} · ${esc(x.confidence)}</div>
+      ${x.geometry_source ? `<div>Outline</div><div>${esc(x.geometry_note || "")} <span style="color:var(--muted)">${x.geometry_source === "MICROSOFT" ? "© Microsoft GlobalMLBuildingFootprints (CDLA-Permissive-2.0)" : "© OpenStreetMap contributors"}</span></div>` : ""}
+      ${x.place_id ? `<div>Place ID</div><div class="mono">${esc(x.place_id)}</div>` : ""}
+      ${f && f.height_m != null ? `<div>Height</div><div>${f.height_m} m <span style="color:var(--muted)">(${esc(f.height_source)}${f.height_page != null ? ", p." + f.height_page : ""})</span></div>` : ""}
+      ${r ? `<div>Inspection ring</div><div>${r.type === "outline" ? `follows outline, ${r.standoff_m} m out` : `${r.radius_m.toFixed(0)} m circle (size assumed)`}</div>
+      <div>Neighbours</div><div>${r.neighbours_checked ? `${r.neighbours.length} mapped nearby` : "not checked"}${r.blocked_points && r.blocked_points.length ? ` · <b>${r.blocked_points.length} point(s) blocked</b>` : ""}</div>` : ""}
+    </div>`;
+  }
+  document.getElementById("target").innerHTML = t;
+
+  let i = "";
+  if (v.errors && v.errors.length) i += `<h2>Errors</h2><ul>${v.errors.map(e => `<li class="err">${esc(e)}</li>`).join("")}</ul>`;
+  if (v.warnings && v.warnings.length) i += `<h2>Warnings</h2><ul>${v.warnings.map(e => `<li class="wrn">${esc(e)}</li>`).join("")}</ul>`;
+  document.getElementById("issues").innerHTML = i;
+
+  let l = `<h2>Mission</h2><div class="kv">
+    <div>Waypoints</div><div>${(v.waypoints || []).length}</div>
+    <div>Version</div><div>${v.mission_version}${v.adaptation_count ? ` (${v.adaptation_count} RAMR update${v.adaptation_count > 1 ? "s" : ""})` : ""}</div>
+    ${v.mission_status ? `<div>Status</div><div>${esc(v.mission_status)}</div>` : ""}</div>`;
+  if (v.drone) l += `<h2>Drone</h2><div class="kv">
+    <div>Position</div><div class="mono">${v.drone.latitude.toFixed(6)}, ${v.drone.longitude.toFixed(6)}</div>
+    <div>Altitude</div><div>${v.drone.altitude_m != null ? v.drone.altitude_m.toFixed(1) + " m" : "—"}</div>
+    <div>Battery</div><div>${v.drone.battery_percent != null ? Math.round(v.drone.battery_percent * 100) + "%" : "—"}</div>
+    <div>Mode</div><div>${esc(v.drone.flight_mode || "—")}</div></div>`;
+  document.getElementById("live").innerHTML = l;
+}
+
+async function poll() {
+  try {
+    const res = await fetch("/api/mission-view", { cache: "no-store" });
+    const v = await res.json(); lastView = v;
+    if (res.ok) { if (document.getElementById("banner").dataset.net) { banner(""); delete document.getElementById("banner").dataset.net; } }
+    const sig = JSON.stringify({ ...v, updated_at: 0 });
+    if (sig !== lastSig) { lastSig = sig; renderPanel(v); MissionMap.render(v); }
+  } catch (e) {
+    banner("Lost connection to the mission map server -- retrying…"); document.getElementById("banner").dataset.net = "1";
+  } finally { setTimeout(poll, POLL_MS); }
+}
+
+(async () => {
+  poll();  // the side panel works even if the map itself can't load
+  try {
+    const cfg = await (await fetch("/api/maps-config", { cache: "no-store" })).json();
+    if (!cfg.configured) { banner("GOOGLE_MAPS_BROWSER_API_KEY is not set in .env -- the map can't load. Mission details are still shown on the right."); return; }
+    await MissionMap.init(cfg, document.getElementById("map"));
+  } catch (e) {
+    banner("Google Maps failed to load: " + e.message + ". Mission details are still shown on the right.");
+  }
+})();
+</script>
+</body>
+</html>

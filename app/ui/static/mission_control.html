@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drone Mission Control</title>
+<!--
+  Web UI for the drone mission planner. Served by app/api/main.py.
+  Type a request -> the EXISTING pipeline plans it -> review on the map ->
+  connect to the drone -> confirm -> the backend flies exactly that accepted
+  mission. All safety rules are enforced in the backend (app/api/service.py),
+  not here. Map drawing: /static/mission_map.js (shared with the CLI map).
+-->
+<style>
+  :root {
+    --bg: #f4f5f7; --panel: #ffffff; --ink: #1f2328; --muted: #5f6672; --line: #dfe2e7;
+    --accent: #1a73e8; --accent-ink: #ffffff; --ok: #188038; --warn: #b26a00; --warn-bg: #fff4e0;
+    --bad: #c5221f; --bad-bg: #fdecea; --ok-bg: #e7f4ea; --chip: #eef1f5; --radius: 10px;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--ink); background: var(--bg); }
+  button, input, textarea { font: inherit; }
+  header { height: 56px; display: flex; align-items: center; gap: 14px; padding: 0 18px; background: #111827; color: #fff; }
+  header h1 { font-size: 16px; margin: 0; font-weight: 650; letter-spacing: .2px; }
+  header .spacer { flex: 1; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.1); font-size: 13px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #9aa0a6; }
+  .dot.on { background: #34c759; } .dot.busy { background: #f9ab00; } .dot.err { background: #ff453a; }
+  main { display: grid; grid-template-columns: 400px 1fr; height: calc(100% - 56px); }
+  #side { overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; border-right: 1px solid var(--line); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; }
+  .card h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+  .card h2 .right { margin-left: auto; text-transform: none; letter-spacing: 0; }
+  textarea { width: 100%; min-height: 74px; resize: vertical; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  textarea:focus, input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+  input[type=text], input[type=number] { width: 100%; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 10px; }
+  .chip { border: 1px solid var(--line); background: var(--chip); border-radius: 999px; padding: 3px 10px; font-size: 12.5px; cursor: pointer; color: var(--ink); }
+  .chip:hover { border-color: var(--accent); }
+  .row { display: flex; gap: 8px; align-items: center; }
+  .row > * { flex: 1; }
+  .btn { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 550; flex: 0 0 auto; }
+  .btn:hover:not(:disabled) { border-color: #b8bec8; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn.danger { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .btn.wide { width: 100%; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+  .hint { color: var(--muted); font-size: 12.5px; }
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 650; }
+  .badge.ok { background: var(--ok-bg); color: var(--ok); } .badge.bad { background: var(--bad-bg); color: var(--bad); }
+  .badge.warn { background: var(--warn-bg); color: var(--warn); } .badge.idle { background: var(--chip); color: var(--muted); }
+  .kv { display: grid; grid-template-columns: 112px 1fr; gap: 3px 10px; font-size: 13px; margin-top: 8px; }
+  .kv > div:nth-child(odd) { color: var(--muted); }
+  .mono { font-family: ui-monospace, Consolas, monospace; font-size: 12px; word-break: break-all; }
+  .msg { margin: 8px 0 0; }
+  ul.issues { margin: 6px 0 0; padding-left: 18px; font-size: 13px; } ul.issues li { margin: 2px 0; }
+  .err { color: var(--bad); } .wrn { color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 10px; }
+  th, td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; }
+  td.nw, th.nw { white-space: nowrap; } td.pos { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; white-space: nowrap; }
+  .steps { display: flex; gap: 4px; margin: 10px 0 6px; }
+  .step { flex: 1; text-align: center; font-size: 11px; padding: 4px 2px; border-radius: 6px; background: var(--chip); color: var(--muted); }
+  .step.done { background: var(--ok-bg); color: var(--ok); } .step.now { background: var(--accent); color: #fff; } .step.fail { background: var(--bad-bg); color: var(--bad); }
+  .bar { height: 7px; background: var(--chip); border-radius: 99px; overflow: hidden; }
+  .bar > div { height: 100%; background: var(--ok); width: 0; transition: width .4s; }
+  .actions { display: flex; gap: 8px; margin-top: 10px; }
+  .actions .btn { flex: 1; }
+  .history { list-style: none; margin: 0; padding: 0; }
+  .history li { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 13px; cursor: pointer; }
+  .history li:last-child { border-bottom: 0; }
+  .history li .t { flex: 1; } .history li:hover .t { color: var(--accent); }
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.5); border-top-color: #fff; border-radius: 50%; display: inline-block; vertical-align: -2px; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #mapwrap { position: relative; }
+  #map { position: absolute; inset: 0; background: #e8eaed; }
+  #mapempty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); text-align: center; padding: 40px; pointer-events: none; }
+  #banner { display: none; position: absolute; top: 12px; left: 12px; right: 12px; z-index: 5; background: var(--bad-bg); color: var(--bad); border: 1px solid #f3b8b4; padding: 8px 12px; border-radius: 8px; }
+  .legend { position: absolute; left: 12px; bottom: 24px; z-index: 4; background: rgba(255,255,255,.95); border-radius: 8px; padding: 8px 10px; box-shadow: var(--shadow); font-size: 12px; }
+  .legend div { display: flex; align-items: center; gap: 7px; margin: 2px 0; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; }
+  .drone { width: 22px; height: 22px; border-radius: 50%; background: #202124; border: 3px solid #fff; box-shadow: 0 0 0 2px #202124; position: relative; }
+  .drone::after { content: ""; position: absolute; left: 5px; top: -9px; border: 3px solid transparent; border-bottom: 7px solid #202124; }
+  #toast { position: fixed; right: 18px; bottom: 18px; max-width: 420px; background: #111827; color: #fff; padding: 10px 14px; border-radius: 8px; box-shadow: var(--shadow); display: none; z-index: 20; }
+  dialog { border: 0; border-radius: 12px; padding: 0; width: min(460px, 92vw); box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(17,24,39,.45); }
+  dialog .body { padding: 18px 20px; } dialog h3 { margin: 0 0 8px; font-size: 17px; }
+  dialog .foot { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 20px; background: var(--bg); border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; grid-template-rows: auto 60vh; height: auto; } #side { border-right: 0; } #mapwrap { order: -1; height: 60vh; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Drone Mission Control</h1>
+  <span class="spacer"></span>
+  <span class="pill" id="dronePill"><span class="dot" id="droneDot"></span><span id="droneLabel">Drone not connected</span></span>
+</header>
+
+<main>
+  <aside id="side">
+    <!-- 1. Request -->
+    <section class="card">
+      <h2>New mission</h2>
+      <textarea id="request" placeholder="e.g. Inspect AB1 of VIT Chennai at 30 meters" maxlength="500"></textarea>
+      <div class="chips" id="examples">
+        <button class="chip" type="button">Inspect AB1 of VIT Chennai at 30 meters</button>
+        <button class="chip" type="button">Inspect Chennai Central railway station at 40 meters</button>
+        <button class="chip" type="button">Inspect Ripon Building, Chennai</button>
+      </div>
+      <details id="launchBox">
+        <summary>Launch point (optional)</summary>
+        <div class="row"><input type="number" step="any" id="homeLat" placeholder="Latitude"><input type="number" step="any" id="homeLon" placeholder="Longitude"></div>
+        <p class="hint">When the drone is connected, its own home position and battery are used automatically.</p>
+      </details>
+      <button class="btn primary wide" id="planBtn" type="button">Plan mission</button>
+      <p class="hint" id="planHint"></p>
+      <button class="btn wide" id="downloadBtn" type="button" disabled title="Download the accepted plan as a Mission Planner .waypoints file">Download .waypoints file</button>
+    </section>
+
+    <!-- 2. Plan -->
+    <section class="card" id="planCard">
+      <h2>Mission plan <span class="right" id="planBadge"><span class="badge idle">No plan yet</span></span></h2>
+      <div id="planBody" class="hint">Type a request above. The plan, its checks and the route appear here and on the map.</div>
+    </section>
+
+    <!-- 3. Drone & flight -->
+    <section class="card">
+      <h2>Drone <span class="right" id="flightBadge"></span></h2>
+      <div class="row">
+        <input type="text" id="address" class="mono" title="MAVLink address: udpin://0.0.0.0:14540 for PX4 SITL, serial:///dev/ttyACM0:57600 or serial://COM5:57600 for a Pixhawk">
+        <button class="btn" id="connectBtn" type="button">Connect</button>
+      </div>
+      <div id="telemetry"></div>
+      <div class="steps" id="steps"></div>
+      <div class="bar"><div id="progress"></div></div>
+      <p class="hint" id="flightMsg"></p>
+      <button class="btn primary wide" id="sendBtn" type="button" disabled>Send mission to drone</button>
+      <div class="actions">
+        <button class="btn" id="holdBtn" type="button" disabled>Hold position</button>
+        <button class="btn danger" id="rtlBtn" type="button" disabled>Return to Launch</button>
+      </div>
+    </section>
+
+    <!-- 4. History -->
+    <section class="card">
+      <h2>History</h2>
+      <ul class="history" id="history"><li class="hint" style="cursor:default">No missions planned yet.</li></ul>
+    </section>
+  </aside>
+
+  <section id="mapwrap">
+    <div id="map"></div>
+    <div id="mapempty">The map opens on the target as soon as a mission is planned.</div>
+    <div id="banner"></div>
+    <div class="legend">
+      <div><span class="sw" style="background:#D93025"></span>Target / inspection area</div>
+      <div><span class="sw" style="background:#1A73E8"></span>Planned route</div>
+      <div><span class="sw" style="background:#188038"></span>Completed</div>
+      <div><span class="sw" style="background:#F9AB00"></span>RAMR correction / your pick</div>
+      <div><span class="sw" style="background:#202124;border-radius:50%"></span>Drone</div>
+    </div>
+  </section>
+</main>
+
+<dialog id="confirm">
+  <div class="body">
+    <h3>Send this mission to the drone?</h3>
+    <p class="hint">The drone will arm, take off and fly the route below. Keep line of sight and be ready to press <b>Return to Launch</b>.</p>
+    <div id="confirmBody"></div>
+  </div>
+  <div class="foot">
+    <button class="btn" id="cancelSend" type="button">Cancel</button>
+    <button class="btn primary" id="doSend" type="button">Upload and start</button>
+  </div>
+</dialog>
+<div id="toast"></div>
+
+<script src="/static/mission_map.js"></script>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const STEPS = [["preflight", "Preflight"], ["upload", "Upload"], ["arm", "Arm"], ["start", "Start"], ["monitor", "Flying"], ["complete", "Done"]];
+let S = null, lastViewSig = null, mapEmptyHidden = false, addressTouched = false, toastTimer = null;
+
+function toast(text) {
+  const t = $("toast"); t.textContent = text; t.style.display = "block";
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.style.display = "none"; }, 6000);
+}
+function banner(text) { const b = $("banner"); b.textContent = text || ""; b.style.display = text ? "block" : "none"; }
+window.gm_authFailure = () => banner("Google Maps rejected the browser key (GOOGLE_MAPS_BROWSER_API_KEY). Enable the Maps JavaScript API and allow " + location.origin + "/* as a referrer.");
+
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? { cache: "no-store" } : {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  let data = null; try { data = await res.json(); } catch (e) { /* empty */ }
+  if (!res.ok) throw new Error((data && data.detail) || `HTTP ${res.status}`);
+  return data;
+}
+const pct = b => b == null ? null : Math.round(b > 1 ? b : b * 100);   // MAVSDK 3 reports 0-100
+
+// ---- actions ------------------------------------------------------------------
+async function plan() {
+  const text = $("request").value.trim();
+  if (!text) { $("request").focus(); return; }
+  const lat = $("homeLat").value, lon = $("homeLon").value;
+  const body = { request: text };
+  if (lat !== "" || lon !== "") { body.home_latitude = lat; body.home_longitude = lon; }
+  setPlanning(true, text);
+  try {
+    const out = await api("/api/plan", body);
+    if (out.waypoints_file) toast("Mission Planner file saved: " + out.waypoints_file);
+    else if (out.waypoints_file_error) toast(out.waypoints_file_error);
+  }
+  catch (e) { toast(e.message); }
+  finally { setPlanning(false); refresh(); }
+}
+function setPlanning(on, text) {
+  const b = $("planBtn"); b.disabled = on;
+  b.innerHTML = on ? '<span class="spinner"></span> Planning…' : "Plan mission";
+  $("planHint").textContent = on ? "Reading the request, finding the location, generating and checking waypoints. This can take 10–30 s." : "";
+}
+async function connect() {
+  const connected = S && S.drone.connected;
+  $("connectBtn").disabled = true;
+  try {
+    if (connected) await api("/api/drone/disconnect", {});
+    else { $("droneLabel").textContent = "Connecting…"; $("droneDot").className = "dot busy"; await api("/api/drone/connect", { address: $("address").value.trim() }); }
+  } catch (e) { toast(e.message); }
+  finally { $("connectBtn").disabled = false; refresh(); }
+}
+function openConfirm() {
+  const p = S && S.current_plan; if (!p) return;
+  const m = p.result.mission || { mission_items: [] };
+  const alts = m.mission_items.map(i => i.altitude).filter(a => a != null);
+  const wps = m.mission_items.filter(i => i.latitude != null).length;
+  const v = S.view, w = (v.warnings || []);
+  $("confirmBody").innerHTML = `<div class="kv">
+      <div>Mission</div><div>${esc(m.mission_name || "—")}</div>
+      <div>Target</div><div>${esc(v.target ? v.target.name : "—")}</div>
+      <div>Waypoints</div><div>${wps} (${m.mission_items.length} items)</div>
+      <div>Altitude</div><div>${alts.length ? Math.min(...alts) + "–" + Math.max(...alts) + " m" : "—"}</div>
+      <div>Drone</div><div class="mono">${esc(S.drone.address)}</div></div>` +
+    (w.length ? `<ul class="issues">${w.map(x => `<li class="wrn">${esc(x)}</li>`).join("")}</ul>` : "");
+  $("confirm").showModal();
+}
+async function send() {
+  const p = S && S.current_plan; $("confirm").close(); if (!p) return;
+  try { await api("/api/drone/send", { plan_id: p.plan_id, confirm: true }); toast("Mission sent -- watch the flight panel."); }
+  catch (e) { toast(e.message); }
+  refresh();
+}
+async function command(path, label) {
+  try { await api(path, {}); toast(label); } catch (e) { toast(e.message); }
+  refresh();
+}
+
+// ---- rendering ----------------------------------------------------------------
+function renderPlan(s) {
+  const v = s.view, p = s.current_plan;
+  if (s.planning.active) { $("planBadge").innerHTML = '<span class="badge warn">Planning…</span>'; return; }
+  if (!v.has_plan && v.pick) {
+    $("planBadge").innerHTML = `<span class="badge warn">${v.pick.state === "locating" ? "Locating…" : "Click " + esc(v.pick.building) + " on the map"}</span>`;
+    $("planBody").innerHTML = `<p class="msg">${esc(v.pick.message)}</p>
+      <p class="msg"><b>Click once on the roof of ${esc(v.pick.building)}</b> inside the grey campus box. That point is used to find the building's real outline; it is saved, so you only do this once per building.</p>` +
+      (v.pick.footprints_note ? `<p class="hint">${esc(v.pick.footprints_note)}</p>` : "") +
+      (v.pick.error ? `<p class="err">${esc(v.pick.error)}</p>` : "");
+    return;
+  }
+  if (!p) return;
+  const cls = p.accepted ? "ok" : (p.status === "GENERATED" ? "warn" : "bad");
+  $("planBadge").innerHTML = `<span class="badge ${cls}">${p.accepted ? "Accepted" : esc(p.status.replace(/_/g, " "))}</span>`;
+  let h = `<div><b>${esc(v.mission_name || p.result.intent?.building || "Mission")}</b></div><p class="msg">${esc(p.message)}</p>`;
+  if (v.target) {
+    const x = v.target, f = v.building_facts, r = v.inspection_region;
+    h += `<div class="kv">
+      <div>Target</div><div>${esc(x.name)}</div>
+      ${x.formatted_address ? `<div>Address</div><div>${esc(x.formatted_address)}</div>` : ""}
+      <div>Location</div><div class="mono">${x.latitude.toFixed(6)}, ${x.longitude.toFixed(6)}</div>
+      <div>Boundary</div><div>${x.geometry_available ? "Real outline" : "Point only (no outline mapped)"}${(x.geometry_source === "MICROSOFT" ? ' <span class="hint">Microsoft ML footprint' + (x.geometry_meta && x.geometry_meta.confidence != null ? ", confidence " + x.geometry_meta.confidence.toFixed(2) : "") + ' · © Microsoft, CDLA-Permissive-2.0</span>' : x.geometry_source === "OPENSTREETMAP" ? ' <span class="hint">© OpenStreetMap</span>' : "")}</div>
+      <div>Source</div><div>${esc(x.source.replace(/_/g, " "))} · ${esc(x.confidence)}</div>
+      ${f && f.height_m != null ? `<div>Height</div><div>${f.height_m} m <span class="hint">(${esc(f.height_source)}${f.height_page != null ? ", p." + f.height_page : ""})</span></div>` : ""}
+      ${r ? `<div>Inspection ring</div><div>${r.type === "outline" ? `follows outline, ${r.standoff_m} m out` : `${r.radius_m.toFixed(0)} m circle (size assumed)`}</div>
+      <div>Neighbours</div><div>${r.neighbours_checked ? `${r.neighbours.length} mapped nearby` : "not checked"}${r.blocked_points && r.blocked_points.length ? ` · <b>${r.blocked_points.length} point(s) blocked</b>` : ""}</div>` : ""}
+    </div>`;
+  }
+  if (v.errors && v.errors.length) h += `<ul class="issues">${v.errors.map(e => `<li class="err">${esc(e)}</li>`).join("")}</ul>`;
+  if (v.warnings && v.warnings.length) h += `<ul class="issues">${v.warnings.map(e => `<li class="wrn">${esc(e)}</li>`).join("")}</ul>`;
+  const items = (p.result.mission && p.result.mission.mission_items) || [];
+  if (items.length) {
+    const CMD = { TAKEOFF: "Take off", WAYPOINT: "Waypoint", LOITER: "Loiter", LAND: "Land", RETURN_TO_LAUNCH: "Return home" };
+    h += `<table><thead><tr><th>#</th><th>Step</th><th>Position</th><th class="nw">Alt</th><th class="nw">Camera</th></tr></thead><tbody>` +
+      items.map(i => `<tr><td>${i.sequence}</td><td class="nw">${esc(CMD[i.command] || i.command)}${i.hold_time_s ? ` (${i.hold_time_s}s)` : ""}</td>` +
+        `<td class="pos">${i.latitude != null ? i.latitude.toFixed(5) + ", " + i.longitude.toFixed(5) : "—"}</td><td class="nw">${i.altitude != null ? i.altitude + " m" : "—"}</td>` +
+        `<td class="nw">${i.yaw_deg != null ? `${Math.round(i.yaw_deg)}°${i.gimbal_pitch_deg ? ` / ${i.gimbal_pitch_deg}°` : ""}${i.take_photo ? " · photo" : ""}` : "—"}</td></tr>`).join("") +
+      `</tbody></table>`;
+  }
+  $("planBody").innerHTML = h;
+}
+
+function renderDrone(s) {
+  const d = s.drone, f = d.flight, t = d.telemetry;
+  if (!addressTouched && document.activeElement !== $("address")) $("address").value = d.address || "";
+  $("droneDot").className = "dot " + (d.connected ? (f.state === "flying" || f.state === "starting" ? "busy" : "on") : (d.error ? "err" : ""));
+  $("droneLabel").textContent = d.connected ? `Connected · ${d.address}` : (d.error ? "Connection failed" : "Drone not connected");
+  $("connectBtn").textContent = d.connected ? "Disconnect" : "Connect";
+  $("telemetry").innerHTML = d.connected && t ? `<div class="kv">
+      <div>Mode</div><div>${esc(t.flight_mode || "—")}${t.is_armed ? " · armed" : ""}</div>
+      <div>Battery</div><div>${pct(t.battery_percent) != null ? pct(t.battery_percent) + "%" : "—"}</div>
+      <div>Altitude</div><div>${t.altitude_m != null ? t.altitude_m.toFixed(1) + " m" : "—"}</div>
+      <div>Position</div><div class="mono">${t.latitude_deg != null ? t.latitude_deg.toFixed(6) + ", " + t.longitude_deg.toFixed(6) : "—"}</div></div>`
+    : (d.error ? `<p class="err msg">${esc(d.error)}</p>` : `<p class="hint msg">PX4 SITL: udpin://0.0.0.0:14540 · Pixhawk over USB: serial://COM5:57600</p>`);
+
+  const order = STEPS.map(x => x[0]), idx = order.indexOf(f.stage);
+  $("steps").innerHTML = f.state === "idle" ? "" : STEPS.map(([k, label], i) => {
+    let c = "step";
+    if (f.state === "failed" && i === idx) c += " fail"; else if (i < idx || f.state === "completed") c += " done"; else if (i === idx) c += " now";
+    return `<div class="${c}">${label}</div>`;
+  }).join("");
+  const prog = f.progress ? Math.round(100 * f.progress[0] / Math.max(1, f.progress[1])) : (f.state === "completed" ? 100 : 0);
+  $("progress").style.width = prog + "%";
+  $("flightMsg").textContent = f.message ? f.message + (f.progress ? ` (${f.progress[0]}/${f.progress[1]})` : "") : "";
+  $("flightBadge").innerHTML = { idle: "", starting: '<span class="badge warn">Starting</span>', flying: '<span class="badge warn">Flying</span>',
+    completed: '<span class="badge ok">Completed</span>', failed: '<span class="badge bad">Stopped</span>' }[f.state] || "";
+
+  const active = f.state === "starting" || f.state === "flying";
+  const p = s.current_plan;
+  $("sendBtn").disabled = !(p && p.accepted && p.current) || active || s.planning.active;
+  window._downloadUrl = p && p.accepted && p.waypoints_download ? p.waypoints_download : null;
+  $("downloadBtn").disabled = !window._downloadUrl;
+  $("sendBtn").title = !p ? "Plan a mission first" : (!p.accepted ? "Only an accepted plan can be sent" : (active ? "A mission is already in flight" : ""));
+  $("holdBtn").disabled = $("rtlBtn").disabled = !d.connected;
+  $("planBtn").disabled = s.planning.active || active;
+}
+
+function renderHistory(s) {
+  if (!s.plans.length) return;
+  $("history").innerHTML = s.plans.slice(0, 12).map(h => {
+    const cls = h.accepted ? "ok" : (h.status === "GENERATED" ? "warn" : "bad");
+    return `<li data-req="${esc(h.request)}" title="Click to put this request back in the box"><span class="t">${esc(h.request)}</span>` +
+      `<span class="badge ${cls}">${h.accepted ? "accepted" : esc(h.status.replace(/_/g, " ").toLowerCase())}</span></li>`;
+  }).join("");
+}
+
+function render(s) {
+  S = s;
+  renderPlan(s); renderDrone(s); renderHistory(s);
+  const v = s.view, sig = JSON.stringify({ ...v, updated_at: 0 });
+  if (sig !== lastViewSig) { lastViewSig = sig; MissionMap.render(v); }
+  if (!mapEmptyHidden && (v.has_plan || v.pick || v.drone)) { $("mapempty").style.display = "none"; mapEmptyHidden = true; }
+}
+
+async function refresh() {
+  try {
+    render(await api("/api/state"));
+    if ($("banner").dataset.net) { banner(""); delete $("banner").dataset.net; }
+  } catch (e) { banner("Lost connection to the mission control server -- is `python -m app.api.main` still running?"); $("banner").dataset.net = "1"; }
+}
+
+// ---- wiring --------------------------------------------------------------------
+$("planBtn").onclick = plan;
+$("request").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) plan(); });
+$("examples").onclick = e => { if (e.target.classList.contains("chip")) { $("request").value = e.target.textContent; $("request").focus(); } };
+$("history").onclick = e => { const li = e.target.closest("li[data-req]"); if (li) { $("request").value = li.dataset.req; $("request").focus(); } };
+$("connectBtn").onclick = connect;
+$("address").addEventListener("input", () => { addressTouched = true; });
+$("sendBtn").onclick = openConfirm;
+$("downloadBtn").onclick = async () => {
+  // Fetch first so a failed download shows a message instead of an error file (or nothing),
+  // and never reuse a cached file from an earlier plan with the same id.
+  const url = window._downloadUrl; if (!url) return;
+  try {
+    const r = await fetch(url + (url.includes("?") ? "&" : "?") + "t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) { let m = "Download failed."; try { m = (await r.json()).detail || m; } catch (_) {} toast(m); return; }
+    const cd = r.headers.get("Content-Disposition") || "", m = /filename="([^"]+)"/.exec(cd);
+    const blob = await r.blob(), href = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = href; a.download = m ? m[1] : "mission.waypoints";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(href), 1000);
+    toast("Downloaded " + a.download);
+  } catch (e) { toast("Download failed: " + e.message); }
+};
+$("cancelSend").onclick = () => $("confirm").close();
+$("doSend").onclick = send;
+$("holdBtn").onclick = () => command("/api/drone/hold", "Hold commanded.");
+$("rtlBtn").onclick = () => command("/api/drone/rtl", "Return to Launch commanded.");
+MissionMap.setPickHandler(async (lat, lng) => {
+  try { const out = await api("/api/pick", { latitude: lat, longitude: lng }); toast(out.message || ""); }
+  catch (e) { toast(e.message); }
+  refresh();
+});
+
+(async () => {
+  refresh(); setInterval(refresh, 1000);
+  try {
+    const cfg = await api("/api/config");
+    if (!cfg.configured) { banner("GOOGLE_MAPS_BROWSER_API_KEY is not set in .env -- the map can't load. Planning and flying still work."); return; }
+    await MissionMap.init(cfg, $("map"));
+  } catch (e) { banner("Google Maps failed to load: " + e.message); }
+})();
+</script>
+</body>
+</html>

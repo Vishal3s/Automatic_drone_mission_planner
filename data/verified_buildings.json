@@ -1,0 +1,19 @@
+{
+  "buildings": [
+    {
+      "institution": "VIT Chennai",
+      "campus": "VIT Chennai",
+      "building": "AB1",
+      "latitude": 12.841051855274344,
+      "longitude": 80.15400861667173,
+      "clicked": [
+        12.841051855274344,
+        80.15400861667173
+      ],
+      "geometry": null,
+      "geometry_parts": null,
+      "geometry_note": "Selected on the map by the user; no mapped outline at that point (kept as a point).",
+      "selected_at": "2026-10-08T12:56:32.255638+00:00"
+    }
+  ]
+}

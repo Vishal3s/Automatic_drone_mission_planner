@@ -1,0 +1,17 @@
+# Environment
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Data generated at runtime
+data/chroma_db/
+data/missions.db
+data/ms_footprints/
+*.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
